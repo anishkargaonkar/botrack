@@ -1,3 +1,4 @@
+import datetime
 import os
 
 import firebase_admin
@@ -32,6 +33,15 @@ def get_source_file(dir=None, source_file_name=None):
     return f
 
 
+def get_signed_url(path):
+    return storage.bucket().blob(path).generate_signed_url(version="v4",
+                                                           # This URL is valid for 15 minutes
+                                                           expiration=datetime.timedelta(
+                                                               minutes=15),
+                                                           # Allow GET requests using this URL.
+                                                           method="GET",)
+
+
 def upload_dir_to_storage(dir=None, bucket_dir=None, source_file_name=None):
     if dir is None:
         return 'Source directory not found!'
@@ -42,12 +52,22 @@ def upload_dir_to_storage(dir=None, bucket_dir=None, source_file_name=None):
     if source_file_name is None:
         return 'Source file name not found!'
 
+    data = {
+        "audio": '',
+        "tracks": [],
+    }
     for filename in os.listdir(dir):
         # Return if it's the source file
         if filename == source_file_name:
-            return
+            signed_url = get_signed_url(path=bucket_dir + '/' + filename)
+            data['audio'] = signed_url
+        else:
+            f = os.path.join(dir, filename)
+            if os.path.isfile(f):
+                print("Upload file: ", f)
+                storage.bucket().blob(bucket_dir + '/' + filename).upload_from_filename(f)
 
-        f = os.path.join(dir, filename)
-        if os.path.isfile(f):
-            print("Upload file: ", f)
-            storage.bucket().blob(bucket_dir + '/' + filename).upload_from_filename(f)
+            signed_url = get_signed_url(path=bucket_dir + '/' + filename)
+            data['tracks'].append(signed_url)
+
+    return data

@@ -1,0 +1,4 @@
+# BOtrack
+
+To run the project:
+- Add firebase credential config to `server` folder with storage bucket enabled

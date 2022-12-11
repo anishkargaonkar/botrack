@@ -58,14 +58,14 @@ def index():
 
     try:
 
-        upload_dir_to_storage(dir=source_directory_path,
+        res = upload_dir_to_storage(dir=source_directory_path,
                             bucket_dir=source_url_list[len(
                                 source_url_list) - 2],
                             source_file_name=source_file_name)
     except:
         abort(make_response(jsonify(message="Uploading extracted audio failed!"), 400))
 
-    return 'Extraction done successfully!'
+    return make_response(jsonify(res))
 
 
 if __name__ == "__main__":
