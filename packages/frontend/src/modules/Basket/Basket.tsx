@@ -1,24 +1,30 @@
-import React from "react";
 import { useTrackStore } from "../hooks/useTrackStore";
 import { Modal, Upload as AntUpload } from "antd";
+import { RcFile } from "antd/es/upload";
 import styled from "styled-components";
-import { uploadTrackProps } from "./constants";
+import { uploadFile } from "../../apis/uploadFile";
 
 type Props = {};
 
 const { Dragger } = AntUpload;
-const Basket = (props: Props) => {
-    const { sourceUrl } = useTrackStore();
+
+const Basket = ({}: Props) => {
+    const { sourceUrl, setSourceUrl } = useTrackStore();
+
+    const onChangeHandler = (file: RcFile) => {
+        uploadFile(file);
+        setSourceUrl("asd");
+    };
 
     return (
         <Container
             width={425}
             centered
-            open={sourceUrl === null}
+            open={sourceUrl !== null}
             footer={null}
             closable={false}
         >
-            <Dragger {...uploadTrackProps}>
+            <Dragger accept=".mp3" beforeUpload={onChangeHandler}>
                 <Title>Upload you track</Title>
                 <SubTitle>in .mp3 format</SubTitle>
             </Dragger>
