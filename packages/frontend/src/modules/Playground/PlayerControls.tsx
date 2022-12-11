@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import styled from "styled-components";
 import { Button as AntButton, Slider } from "antd";
 import {
@@ -9,19 +7,51 @@ import {
     PlusOutlined,
 } from "@ant-design/icons";
 
-const PlayerControls = () => {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [volume, setVolume] = useState(0);
+import { convertTime } from "../../utils";
 
+type Props = {
+    volume: number;
+    duration: number;
+    isPlaying: boolean;
+    currentTime: number;
+
+    setVolume(val: number): void;
+    toggleIsPlaying(val: boolean): void;
+};
+
+const PlayerControls = ({
+    volume,
+    duration,
+    isPlaying,
+    currentTime,
+    setVolume,
+    toggleIsPlaying,
+}: Props) => {
     const onClickHandler = () => {
-        setIsPlaying(!isPlaying);
+        toggleIsPlaying(!isPlaying);
+    };
+
+    const handleVolumeChange = (val: "up" | "down") => {
+        if (val === "up") {
+            if (10 + volume >= 100) {
+                setVolume(100);
+            } else {
+                setVolume(volume + 10);
+            }
+        } else {
+            if (volume - 10 <= 0) {
+                setVolume(0);
+            } else {
+                setVolume(volume - 10);
+            }
+        }
     };
 
     return (
         <Container>
             <Time>
-                <CurrentTime>00:01:27</CurrentTime> /{" "}
-                <TotalTime>00:03:35</TotalTime>
+                <CurrentTime>{convertTime(currentTime)}</CurrentTime> /{" "}
+                <TotalTime>{convertTime(duration)}</TotalTime>
             </Time>
             <PrimaryButton
                 isActive={isPlaying}
@@ -30,14 +60,20 @@ const PlayerControls = () => {
                 onClick={onClickHandler}
             />
             <VolumeControls>
-                <SecondaryButton icon={<MinusOutlined />} />
+                <SecondaryButton
+                    icon={<MinusOutlined />}
+                    onClick={() => handleVolumeChange("down")}
+                />
                 <VolumeSlider
                     min={0}
                     max={100}
                     onChange={setVolume}
                     value={volume}
                 />
-                <SecondaryButton icon={<PlusOutlined />} />
+                <SecondaryButton
+                    icon={<PlusOutlined />}
+                    onClick={() => handleVolumeChange("up")}
+                />
             </VolumeControls>
         </Container>
     );

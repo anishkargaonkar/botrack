@@ -33,6 +33,22 @@ const TrackControls = ({
         toggleIsPlaying(!isPlaying);
     };
 
+    const handleVolumeChange = (val: "up" | "down") => {
+        if (val === "up") {
+            if (10 + volume >= 100) {
+                setVolume(100);
+            } else {
+                setVolume(volume + 10);
+            }
+        } else {
+            if (volume - 10 <= 0) {
+                setVolume(0);
+            } else {
+                setVolume(volume - 10);
+            }
+        }
+    };
+
     return (
         <Container borderColor={waveColor}>
             <PrimaryButton
@@ -46,14 +62,20 @@ const TrackControls = ({
                 <TotalTime>{convertTime(duration)}</TotalTime>
             </Time>
             <VolumeControls>
-                <SecondaryButton icon={<MinusOutlined />} />
+                <SecondaryButton
+                    icon={<MinusOutlined />}
+                    onClick={() => handleVolumeChange("down")}
+                />
                 <VolumeSlider
                     min={0}
                     max={100}
                     onChange={setVolume}
                     value={volume}
                 />
-                <SecondaryButton icon={<PlusOutlined />} />
+                <SecondaryButton
+                    icon={<PlusOutlined />}
+                    onClick={() => handleVolumeChange("up")}
+                />
             </VolumeControls>
         </Container>
     );

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Waveform } from "./Waveform";
 
 import { Header } from "./Header";
-import { PlayerControls } from "./PlayerControls";
+import { MainTrack } from "./MainTrack";
 
 type Props = {};
 
@@ -13,7 +13,7 @@ const Playground = ({}: Props) => {
             <Header />
             <div>
                 <Waveform audio="https://s172.123apps.com/aconv/d/s172u6vIhYAV_mp3_IYimUtZy.mp3" />
-                <PlayerControls />
+                <MainTrack audio="https://s172.123apps.com/aconv/d/s172u6vIhYAV_mp3_IYimUtZy.mp3" />
             </div>
         </Container>
     );
