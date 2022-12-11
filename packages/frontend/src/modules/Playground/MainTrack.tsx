@@ -5,6 +5,8 @@ import WaveSurfer from "wavesurfer.js";
 import { PlayerTrack } from "./PlayerTrack";
 import { PlayerControls } from "./PlayerControls";
 
+import { useTrackStore } from "../hooks/useTrackStore";
+
 type Props = {
     audio: string;
 };
@@ -19,6 +21,11 @@ const MainTrack = ({ audio }: Props) => {
         getCurrentTime: (): number => 0,
         seekTo: (val: number): null => null,
     });
+    const {
+        setAllPlayingState,
+        setVolumeForAllTrack,
+        setCurrentTimeForAllTrack,
+    } = useTrackStore();
 
     const intervalRef = useRef(0);
     const audioRef = useRef(new Audio(audio));
@@ -37,7 +44,7 @@ const MainTrack = ({ audio }: Props) => {
             responsive: true,
             cursorWidth: 0,
             barWidth: 1,
-            barHeight: 1.75,
+            barHeight: 0.5,
             barGap: 2,
             barRadius: 1,
             waveColor: "#fff",
@@ -54,6 +61,7 @@ const MainTrack = ({ audio }: Props) => {
 
     const onTogglePlayPause = (val: boolean) => {
         toggleIsPlaying(val);
+        setAllPlayingState({ val });
         waveSurferRef.current.playPause();
 
         intervalRef.current = setInterval(() => {
@@ -61,6 +69,9 @@ const MainTrack = ({ audio }: Props) => {
                 clearInterval(intervalRef.current);
                 toggleIsPlaying(false);
             } else {
+                setCurrentTimeForAllTrack({
+                    val: waveSurferRef.current.getCurrentTime(),
+                });
                 setCurrentTime(waveSurferRef.current.getCurrentTime());
                 waveSurferRef.current.seekTo(
                     waveSurferRef.current.getCurrentTime() /
@@ -72,6 +83,7 @@ const MainTrack = ({ audio }: Props) => {
 
     const onSetTrackVolume = (val: number) => {
         setVolume(val);
+        setVolumeForAllTrack({ val });
         audioRef.current.volume = val / 100;
         waveSurferRef.current.setVolume(val / 100);
     };

@@ -1,7 +1,10 @@
-import { useTrackStore } from "../hooks/useTrackStore";
-import { Modal, Upload as AntUpload } from "antd";
-import { RcFile } from "antd/es/upload";
 import styled from "styled-components";
+import { Modal, Upload as AntUpload } from "antd";
+
+import { RcFile } from "antd/es/upload";
+
+import { useTrackStore } from "../hooks/useTrackStore";
+
 import { uploadFile } from "../../apis/uploadFile";
 
 type Props = {};
@@ -20,7 +23,7 @@ const Basket = ({}: Props) => {
         <Container
             width={425}
             centered
-            open={sourceUrl !== null}
+            open={sourceUrl === null}
             footer={null}
             closable={false}
         >

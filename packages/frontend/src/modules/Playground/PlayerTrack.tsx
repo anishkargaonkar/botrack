@@ -28,7 +28,8 @@ const SubContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+
+    height: 3rem;
 
     padding-right: 1rem;
     border-radius: 2rem;
@@ -37,7 +38,7 @@ const SubContainer = styled.div`
 `;
 
 const WaveContainer = styled.div`
-    width: 90vw;
+    width: 85vw;
 `;
 
 export { PlayerTrack };

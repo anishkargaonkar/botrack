@@ -10,10 +10,26 @@ import { getRandomHexColor } from "../../utils";
 
 
 type Props = {
+    id: string;
     audio: string;
+    volume: number;
+    isPlaying: boolean;
+    currentTime: number;
+
+    setPlayingState(val: boolean): void;
+    setVolumeForTrack(val: number): void;
+    setCurrentTimeForTrack(val: number): void;
 };
 
-const Waveform = ({ audio }: Props) => {
+const Waveform = ({
+    audio,
+    volume,
+    isPlaying,
+    currentTime,
+    setPlayingState,
+    setVolumeForTrack,
+    setCurrentTimeForTrack,
+}: Props) => {
     const containerRef = useRef(null);
     const waveSurferRef = useRef({
         isPlaying: (): boolean => false,
@@ -26,10 +42,7 @@ const Waveform = ({ audio }: Props) => {
     const intervalRef = useRef(0);
     const audioRef = useRef(new Audio(audio));
 
-    const [isPlaying, toggleIsPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
-    const [currentTime, setCurrentTime] = useState(0);
-    const [volume, setVolume] = useState(100);
     const [waveColor] = useState(getRandomHexColor());
 
     audioRef.current.onloadeddata = () => {
@@ -58,15 +71,15 @@ const Waveform = ({ audio }: Props) => {
     }, [audio]);
 
     const onTogglePlayPause = (val: boolean) => {
-        toggleIsPlaying(val);
+        setPlayingState(val);
         waveSurferRef.current.playPause();
 
         intervalRef.current = setInterval(() => {
             if (audioRef.current.ended) {
                 clearInterval(intervalRef.current);
-                toggleIsPlaying(false);
+                setPlayingState(false);
             } else {
-                setCurrentTime(waveSurferRef.current.getCurrentTime());
+                setCurrentTimeForTrack(waveSurferRef.current.getCurrentTime());
                 waveSurferRef.current.seekTo(
                     waveSurferRef.current.getCurrentTime() /
                         audioRef.current.duration
@@ -76,7 +89,7 @@ const Waveform = ({ audio }: Props) => {
     };
 
     const onSetTrackVolume = (val: number) => {
-        setVolume(val);
+        setVolumeForTrack(val);
         audioRef.current.volume = val / 100;
         waveSurferRef.current.setVolume(val / 100);
     };
