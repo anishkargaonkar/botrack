@@ -7,7 +7,11 @@ type TrackState = {
 
 const useTrackStore = create<TrackState>((set) => ({
     sourceUrl: null,
-    setSourceUrl: (sourceUrl: string) => set(state => ({ ...state, sourceUrl: sourceUrl }))
+    setSourceUrl: (sourceUrl: string) =>
+        set((state) => ({ ...state, sourceUrl: sourceUrl })),
+    tracks: [],
+    setTracks: (tracks: string[]) =>
+        set((state) => ({ ...state, tracks: tracks })),
 }));
 
 export { useTrackStore };
